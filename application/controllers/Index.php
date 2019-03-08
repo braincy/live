@@ -3,11 +3,11 @@
 class IndexController extends Base_Controller_Abstractlive {
 
 	public function indexAction() {
-	    $result = [];
+	    $data = [];
 
-        $result['mysql'] = $this->_mysqlModel->mysqlQuery('show databases');
-        $result['redis'] = $this->_redisLiveLink->get('redis_test');
+        $data['mysql'] = $this->_mysqlModel->mysqlQuery('show databases');
+        $data['redis'] = $this->_redisLiveLink->get('redis_test');
 
-        echo json_encode($result);
+        $this->response(Base_Error::SUCCESS, $data);
 	}
 }

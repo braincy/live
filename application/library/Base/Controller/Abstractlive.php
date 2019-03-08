@@ -30,6 +30,6 @@ class Base_Controller_Abstractlive extends Yaf_Controller_Abstract {
         $responseData['data']  = $data;
 
         $output = json_encode($responseData);
-        exit($output);
+        echo $output;
     }
 }
