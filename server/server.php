@@ -1,9 +1,9 @@
 <?php
 
-class HttpServer
+class WebSockerServer
 {
     public static $instance;
-    public $http;
+    public $ws;
     public static $get;
     public static $post;
     public static $header;
@@ -11,28 +11,33 @@ class HttpServer
     private $application;
 
     public function __construct() {
-        $http = new swoole_http_server(
+        $ws = new swoole_websocket_server(
             '127.0.0.1',
             9501,
             SWOOLE_PROCESS,
             SWOOLE_SOCK_TCP
         );
-        $http->set([
-            'worker_num' => 3,
+        $ws->set([
+            'worker_num' => 16,
             'daemonize' => false,
             'max_request' => 10000,
-            'dispatch_mode' => 1
+            'dispatch_mode' => 1,
+            'enable_static_handler' => true,
+            'document_root' => dirname(__DIR__),
         ]);
-        $http->on('WorkerStart', [$this, 'onWorkerStart']);
-        $http->on('request', function ($request, $response) {
-            HttpServer::$server = $request->server ?? [];
-            HttpServer::$header = $request->header ?? [];
-            HttpServer::$get    = $request->get ?? [];
-            HttpServer::$post   = $request->post ?? [];
+
+        $ws->on('open', [$this, 'onOpen']);
+        $ws->on('message', [$this, 'onMessage']);
+        $ws->on('WorkerStart', [$this, 'onWorkerStart']);
+        $ws->on('request', function ($request, $response) {
+            self::$server = $request->server ?? [];
+            self::$header = $request->header ?? [];
+            self::$get    = $request->get ?? [];
+            self::$post   = $request->post ?? [];
 
             ob_start();
             try {
-                $yaf_request = new Yaf_Request_Http(HttpServer::$server['request_uri']);
+                $yaf_request = new Yaf_Request_Http(self::$server['request_uri']);
                 $this->application->getDispatcher()->dispatch($yaf_request);
             } catch (Yaf_Exception $e) {
                 // TODO
@@ -43,11 +48,13 @@ class HttpServer
 
             $response->end($result);
         });
-        $http->start();
+        $ws->start();
     }
 
     public function onWorkerStart() {
         define('APPLICATION_PATH', dirname(__DIR__));
+        define('APPLICATION_VIEW_PATH', dirname(__DIR__) . '/application/views/');
+
         $this->application = new Yaf_Application(
             APPLICATION_PATH . '/conf/application.ini'
         );
@@ -57,13 +64,21 @@ class HttpServer
         ob_end_clean();
     }
 
+    public function onOpen($ws, $request) {
+        //
+    }
+
+    public function onMessage($ws, $frame) {
+        //
+    }
+
     public static function getInstance() {
         if (!self::$instance) {
-            self::$instance = new HttpServer;
+            self::$instance = new WebSockerServer;
         }
         return self::$instance;
     }
 }
 
 
-HttpServer::getInstance();
+WebSockerServer::getInstance();

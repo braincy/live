@@ -22,6 +22,7 @@ class Bootstrap extends Yaf_Bootstrap_Abstract {
 
 		//关闭模板渲染
         $dispatcher->autoRender(false);
+        Yaf_Dispatcher::getInstance()->disableView();
 	}
 
 	public function _initRoute(Yaf_Dispatcher $dispatcher) {
