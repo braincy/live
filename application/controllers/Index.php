@@ -1,6 +1,6 @@
 <?php
 
-class TestController extends Base_Controller_Abstractlive {
+class IndexController extends Base_Controller_Abstractlive {
 
 	public function indexAction() {
         $data = [];
