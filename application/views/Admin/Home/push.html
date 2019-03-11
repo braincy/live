@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -19,21 +17,45 @@
       <div class="layui-card-body" style="padding: 15px;">
         <form class="layui-form" action="" lay-filter="component-form-group">
           <div class="layui-form-item">
-            <label class="layui-form-label">当前球队</label>
-            <div class="layui-input-block">
-              <input type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input">
+            <div class="layui-inline">
+              <label class="layui-form-label">当前球队</label>
+              <div class="layui-input-inline" style="width: 100px;">
+                <select name="type" lay-verify="required" lay-filter="aihao">
+                  <option value=""></option>
+                  <option value="0">魔术</option>
+                  <option value="1">火箭</option>
+                  <option value="2">灰熊</option>
+                  <option value="3">小牛</option>
+                </select>
+              </div>
+              <div class="layui-form-mid">-</div>
+              <div class="layui-input-inline" style="width: 100px;">
+                <select name="type" lay-verify="required" lay-filter="aihao">
+                  <option value=""></option>
+                  <option value="0">魔术</option>
+                  <option value="1">火箭</option>
+                  <option value="2">灰熊</option>
+                  <option value="3">小牛</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="layui-form-item">
+            <div class="layui-inline">
+              <label class="layui-form-label">当前比分</label>
+              <div class="layui-input-inline" style="width: 100px;">
+                <input type="text" name="price_min" placeholder="00" autocomplete="off" class="layui-input">
+              </div>
+              <div class="layui-form-mid">-</div>
+              <div class="layui-input-inline" style="width: 100px;">
+                <input type="text" name="price_max" placeholder="00" autocomplete="off" class="layui-input">
+              </div>
             </div>
           </div>
           <div class="layui-form-item">
             <label class="layui-form-label">进行时间</label>
-            <div class="layui-input-block">
-              <input type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input">
-            </div>
-          </div>
-          <div class="layui-form-item">
-            <label class="layui-form-label">当前比分</label>
-            <div class="layui-input-block">
-              <input type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input">
+            <div class="layui-input-inline">
+              <input type="text" class="layui-input" id="test-laydate-type-time" placeholder="HH:mm:ss">
             </div>
           </div>
           <div class="layui-form-item layui-form-text">
@@ -89,6 +111,12 @@
       elem: '#LAY-component-form-group-date'
     });
 
+    //时间选择器
+    laydate.render({
+      elem: '#test-laydate-type-time'
+      ,type: 'time'
+    });
+
     //普通图片上传
     var uploadInst = upload.render({
       elem: '#test-upload-normal'
@@ -105,14 +133,6 @@
           return layer.msg('上传失败');
         }
         //上传成功
-      }
-      ,error: function(){
-        //演示失败状态，并实现重传
-        var demoText = $('#test-upload-demoText');
-        demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
-        demoText.find('.demo-reload').on('click', function(){
-          uploadInst.upload();
-        });
       }
     });
     
