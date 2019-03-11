@@ -67,7 +67,7 @@
           <div class="layui-form-item layui-layout-admin">
             <div class="layui-input-block">
               <div class="layui-footer" style="left: 0;">
-                <button class="layui-btn" lay-submit="" lay-filter="component-form">立即提交</button>
+                <button class="layui-btn" lay-filter="push-form">立即提交</button>
                 <button type="reset" class="layui-btn layui-btn-primary">重置</button>
               </div>
             </div>
@@ -104,11 +104,16 @@
       elem: '#test-laydate-type-time'
       ,type: 'time'
     });
-    
-    /* 监听提交 */
-    form.on('submit(component-form)', function(data){
-      parent.layer.alert(JSON.stringify(data.field), {
-        title: '最终的提交信息'
+
+    form.on('submit(push-form)', function (data) {
+      $.ajax({
+        type: "POST",
+        url: "/Admin/Api/push",
+        dataType: "json",
+        data: data.field,
+        success: function (result) {
+          layer.msg('赛况推送成功');
+        }
       });
       return false;
     });
